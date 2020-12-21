@@ -1,0 +1,105 @@
+import React, { useRef } from "react";
+import { IoIosChatboxes } from "react-icons/io";
+import Dropdown from "react-bootstrap/Dropdown";
+import Image from "react-bootstrap/Image";
+import { useDispatch, useSelector } from "react-redux";
+import firebase from "../../../firebase";
+import mime from "mime-types";
+import { setPhotoURL } from "../../../redux/actions/user_action";
+
+function UserPanel() {
+  const user = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
+  const inputOpenImageRef = useRef();
+
+  const handleLogout = () => {
+    firebase.auth().signOut(); //로그아웃하기!
+  };
+
+  const handleOpenImageRef = () => {
+    inputOpenImageRef.current.click();
+  };
+
+  const handleUploadImage = async (event) => {
+    const file = event.target.files[0];
+
+    const metadata = { contentType: mime.lookup(file.name) };
+    // mime을 통해 파일 확장자를 바로 알수있다!
+
+    try {
+      //스토리지에 파일 저장하기
+      let uploadTaskSnapshot = await firebase
+        .storage()
+        .ref()
+        .child(`user_image/${user.uid}`) //user_image폴더 안에 넣겠음 storage의
+        .put(file, metadata); //데이터를 file에 넣고 metadata 에 확장자를 넣어준다
+
+      let downloadURL = await uploadTaskSnapshot.ref.getDownloadURL();
+      //메소드로 주소 가져옴
+
+      // 프로필 이미지 수정
+      await firebase.auth().currentUser.updateProfile({
+        photoURL: downloadURL,
+      });
+
+      dispatch(setPhotoURL(downloadURL));
+      //리덕스에 저장된 프로필사진 바꿔주기!
+
+      //데이터베이스 유저 이미지 수정
+      await firebase
+        .database()
+        .ref("users")
+        .child(user.uid) //유저 찾고!!
+        .update({ image: downloadURL }); //이미지 수정하기!
+
+      // console.log('uploadTaskSnapshot', uploadTaskSnapshot)
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  return (
+    <div>
+      {/* Logo */}
+      <h3 style={{ color: "white" }}>
+        <IoIosChatboxes /> Chat App
+      </h3>
+
+      <div style={{ display: "flex", marginBottom: "1rem" }}>
+        <Image
+          src={user && user.photoURL}
+          style={{ width: "30p", height: "30px", marginTop: "3px" }}
+          roundedCircle
+        />
+
+        <Dropdown>
+          <Dropdown.Toggle
+            style={{ background: "transparent", boder: "0px" }}
+            id="dropdown-basic"
+          >
+            {user && user.displayName}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleOpenImageRef}>
+              Change the profile picture
+            </Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>LogOut</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      <input
+        onChange={handleUploadImage}
+        accept="image/jpeg, image/png"
+        style={{ display: "none" }}
+        ref={inputOpenImageRef}
+        type="file"
+      />
+      {/* 숨겨져있다.. ref통해서 클릭시킬것임! 
+      accept 통해서 파일 속성 정할수있음!*/}
+    </div>
+  );
+}
+
+export default UserPanel;

@@ -8,9 +8,9 @@ import { createStore, applyMiddleware } from "redux";
 import promiseMiddleware from "redux-promise";
 import ReduxThunk from "redux-thunk";
 import Reducer from "./redux/reducers";
+import { BrowserRouter as Router } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-//함수랑 프로미스 까지 받기위해 미들웨어 만들어 줘야함!
 const createStoreWithMiddleware = applyMiddleware(
   promiseMiddleware,
   ReduxThunk
@@ -25,7 +25,10 @@ ReactDOM.render(
           window.__REDUX_DEVTOOLS_EXTENSION__()
       )}
     >
-      <App />
+      <Router>
+        {/* router로 감싸줘야  history 사용가능함! */}
+        <App />
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
