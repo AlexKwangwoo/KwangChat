@@ -1,0 +1,32 @@
+.OutsideBox {
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #202226;
+}
+
+.topBox {
+}
+
+.bigBox {
+  width: 100%;
+  display: flex;
+  background-color: #202226;
+}
+
+.veryBox {
+  width: 90px;
+}
+
+.sideMainBox {
+  display: flex;
+  width: 100%;
+  background-color: white;
+}
+
+.side {
+  background-color: #202226;
+}
+
+.main {
+  width: 100%;
+}

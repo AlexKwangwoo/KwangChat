@@ -1,0 +1,28 @@
+.box {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  height: 50px;
+  align-items: center;
+}
+
+.line {
+  height: 2px;
+  width: 100%;
+  background-color: #202226;
+  border: none;
+}
+
+.inputBox {
+  color: #6a6d73;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 3px;
+  width: 100%;
+  background-color: #202226;
+  border: none;
+  height: 30px;
+  padding-left: 6px;
+  padding-bottom: 3px;
+  outline: none;
+}

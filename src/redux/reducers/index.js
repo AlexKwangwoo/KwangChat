@@ -8,3 +8,5 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
+
+//index(동작할 부분 합체) => type => action => reducers

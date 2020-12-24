@@ -4,16 +4,23 @@ import Message from "./Message";
 import MessageForm from "./MessageForm";
 import { connect } from "react-redux";
 import firebase from "../../../firebase";
+import { setUserPosts } from "../../../redux/actions/chatRoom_action";
+import Skeleton from "../../../commons/components/Skeleton";
+import styles from "./MainPanel.module.css";
 
 export class MainPanel extends Component {
+  messageEndRef = React.createRef();
+
   state = {
     messages: [],
     messagesRef: firebase.database().ref("messages"),
-    //
     messagesLoading: true,
     searchTerm: "",
     searchResults: [],
     searchLoading: false,
+    typingRef: firebase.database().ref("typing"),
+    typingUsers: [],
+    listenerLists: [],
   };
 
   componentDidMount() {
@@ -22,8 +29,83 @@ export class MainPanel extends Component {
 
     if (chatRoom) {
       this.addMessagesListeners(chatRoom.id);
+      this.addTypingListeners(chatRoom.id);
     }
-  }
+  } //컴포넌트 랜더 전에 한번실행!
+
+  componentDidUpdate() {
+    if (this.messageEndRef) {
+      this.messageEndRef.scrollIntoView({ behavior: "smooth" });
+    }
+  } //타이핑 할때마다 실행! 자동으로 스크롤 위치 가주기!!
+
+  componentWillUnmount() {
+    this.state.messagesRef.off();
+    this.removeListeners(this.state.listenerLists);
+  } //컴포넌트 죽기전에 실행!
+
+  removeListeners = (listeners) => {
+    listeners.forEach((listner) => {
+      listner.ref.child(listner.id).off(listner.event);
+    });
+  };
+
+  addTypingListeners = (chatRoomId) => {
+    let typingUsers = [];
+    //typing이 새로 들어올 때
+    this.state.typingRef.child(chatRoomId).on("child_added", (DataSnapshot) => {
+      if (DataSnapshot.key !== this.props.user.uid) {
+        typingUsers = typingUsers.concat({
+          //typingUsers오른쪽껀 위에꺼임!
+          id: DataSnapshot.key,
+          name: DataSnapshot.val(),
+        });
+        this.setState({ typingUsers });
+      }
+    });
+
+    //listenersList state에 등록된 리스너를 넣어주기
+    this.addToListenerLists(chatRoomId, this.state.typingRef, "child_added");
+
+    //typing을 지워줄 때
+    this.state.typingRef
+      .child(chatRoomId)
+      .on("child_removed", (DataSnapshot) => {
+        const index = typingUsers.findIndex(
+          (user) => user.id === DataSnapshot.key
+        );
+        if (index !== -1) {
+          typingUsers = typingUsers.filter(
+            (user) => user.id !== DataSnapshot.key
+            //현재 치고 있는 사람만 제거! 왜냐하면 현재 안치고있는사람만
+            // 필터 했기 때문에!
+          );
+          this.setState({ typingUsers });
+        }
+      });
+    //listenersList state에 등록된 리스너를 넣어주기
+    this.addToListenerLists(chatRoomId, this.state.typingRef, "child_removed");
+    //다른 사람이 동시에 typing중일수 있으므로.. 함부러 listener를 다 끄면 안된다!
+  };
+
+  // 리스너 배열에 담기!!
+  addToListenerLists = (id, ref, event) => {
+    //이미 등록된 리스너인지 확인
+    // 조건 3개 비교해서 같은지..
+    const index = this.state.listenerLists.findIndex((listener) => {
+      return (
+        listener.id === id && listener.ref === ref && listener.event === event
+      );
+    });
+
+    //없을시 새로 추가를 해준다!!
+    if (index === -1) {
+      const newListener = { id, ref, event };
+      this.setState({
+        listenerLists: this.state.listenerLists.concat(newListener),
+      });
+    }
+  };
 
   handleSearchMessages = () => {
     const chatRoomMessages = [...this.state.messages];
@@ -70,16 +152,36 @@ export class MainPanel extends Component {
     this.state.messagesRef //데이터 베이스 접근!
       .child(chatRoomId)
       .on("child_added", (DataSnapshot) => {
+        // console.log("messageAre DataSnapshot val", DataSnapshot.val());
         messagesArray.push(DataSnapshot.val());
         //여기서 chatroomID를 통해 데이터베이스 chatroom테이블에 있는
         // 모든 메세지를 가져오며!
         //데이터 추가시 바로 적용가능!
-        console.log("messageAre", messagesArray);
+        // console.log("messageAre", messagesArray);
         this.setState({
           messages: messagesArray,
           messagesLoading: false,
         });
+        this.userPostsCount(messagesArray);
       });
+  };
+
+  userPostsCount = (messages) => {
+    let userPosts = messages.reduce((acc, message) => {
+      if (message.user.name in acc) {
+        //이름이 있다면 count+1
+        acc[message.user.name].count += 1;
+      } else {
+        //이름이 없다면.. 1
+        acc[message.user.name] = {
+          image: message.user.image,
+          count: 1,
+        };
+      }
+      return acc;
+    }, {});
+    this.props.dispatch(setUserPosts(userPosts));
+    //여길통해 리덕스로 보내준다!
   };
 
   renderMessages = (messages) =>
@@ -92,31 +194,54 @@ export class MainPanel extends Component {
       />
     ));
 
-  render() {
-    const { messages, searchTerm, searchResults } = this.state;
+  renderTypingUsers = (typingUsers) =>
+    typingUsers.length > 0 &&
+    typingUsers.map((user) => <span>{user.name} is typing now..</span>);
 
-    console.log("searchTerm", searchTerm);
+  renderMessageSkeleton = (loading) =>
+    loading && (
+      <>
+        {/* [1,2,3,4,5,6,7,8,9,10] 이랑 똑같음.. 10개 넣음*/}
+        {[...Array(10)].map((v, i) => (
+          <Skeleton key={i} />
+        ))}
+      </>
+    );
+
+  render() {
+    const {
+      messages,
+      searchTerm,
+      searchResults,
+      typingUsers,
+      messagesLoading,
+    } = this.state;
+
+    // console.log("searchTerm", searchTerm);
     return (
-      <div style={{ padding: "2rem 2rem 0 2rem" }}>
+      <div className={styles.mainBox}>
         <MessageHeader handleSearchChange={this.handleSearchChange} />
 
         <div
           style={{
             width: "100%",
-            height: "450px",
-            border: ".2rem solid #ececec",
-            borderRadius: "4px",
-            padding: "1rem",
-            marginBottom: "1rem",
+            height: "830px",
+            paddingTop: "1rem",
+            paddingBottom: "1rem",
+            paddingLeft: "1rem",
             overflowY: "auto",
+            backgroundColor: "#363a3f",
           }}
         >
+          {this.renderMessageSkeleton(messagesLoading)}
           {searchTerm
             ? this.renderMessages(searchResults)
             : this.renderMessages(messages)}
           {/* 검색어 있으면 검색어의 배열만 보여준다! */}
 
-          {}
+          {this.renderTypingUsers(typingUsers)}
+          <div ref={(node) => (this.messageEndRef = node)} />
+          {/* node => <div></div> 현재 div>를 가리킴!! */}
         </div>
 
         <MessageForm />

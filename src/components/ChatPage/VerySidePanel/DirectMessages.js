@@ -6,7 +6,6 @@ import {
   setCurrentChatRoom,
   setPrivateChatRoom,
 } from "../../../redux/actions/chatRoom_action";
-import styles from "./DirectMessages.module.css";
 
 export class DirectMessages extends Component {
   state = {
@@ -17,7 +16,7 @@ export class DirectMessages extends Component {
 
   componentDidMount() {
     if (this.props.user) {
-      this.addUsersListeners(this.props.user.uid); //리덕스user는 여기서 사용!
+      this.addUsersListeners(this.props.user.uid);
     } //바로 변수로 넣어줌!
   }
 
@@ -72,30 +71,24 @@ export class DirectMessages extends Component {
     users.length > 0 &&
     users.map((user) => (
       <li
-        className={styles.li}
         key={user.uid}
         style={{
-          backgroundColor: user.uid === this.state.activeChatRoom && " #40444c",
-          color: user.uid === this.state.activeChatRoom && " white",
-          marginBottom: "4px",
-          paddingLeft: "5px",
-          height: "46px",
-          display: "flex",
-          alignItems: "center",
+          backgroundColor:
+            user.uid === this.state.activeChatRoom && "#ffffff45",
         }} //내가 클릭한 방과 uid가 같으면 색주기!
         onClick={() => this.changeChatRoom(user)}
       >
-        <img className={styles.avatar} src={user.image} />
-        <span className={styles.name}>{user.name}</span>
+        # {user.name}
       </li>
     ));
 
   render() {
     const { users } = this.state;
-    console.log(users);
     return (
       <div>
-        <div className={styles.titlebox}>DIRECT MESSAGES</div>
+        <span style={{ display: "flex", alignItems: "center" }}>
+          <FaRegSmile style={{ marginRight: 3 }} /> DIRECT MESSAGES(1)
+        </span>
 
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {this.renderDirectMessages(users)}

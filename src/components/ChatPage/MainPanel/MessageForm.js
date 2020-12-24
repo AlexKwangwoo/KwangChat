@@ -6,7 +6,9 @@ import Col from "react-bootstrap/Col";
 import firebase from "../../../firebase";
 import { useSelector } from "react-redux";
 import mime from "mime-types";
-
+import styles from "./MessageForm.module.css";
+import { FaPlusCircle } from "react-icons/fa";
+import { FiSend } from "react-icons/fi";
 function MessageForm() {
   const chatRoom = useSelector((state) => state.chatRoom.currentChatRoom);
   const user = useSelector((state) => state.user.currentUser);
@@ -23,6 +25,7 @@ function MessageForm() {
 
   const storageRef = firebase.storage().ref();
   //파베 스토리지 접근!
+  const typingRef = firebase.database().ref("typing");
   const isPrivateChatRoom = useSelector(
     (state) => state.chatRoom.isPrivateChatRoom
   );
@@ -49,7 +52,8 @@ function MessageForm() {
     return message;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (!content) {
       setErrors((prev) => prev.concat("Type contents first"));
       //prev는 월래 있던 애러에다가 concat으로 단어 붙어줌!
@@ -61,6 +65,9 @@ function MessageForm() {
       await messagesRef.child(chatRoom.id).push().set(createMessage());
       //체팅방 id를 넣고!
       //매세지 보내줬으면.. 다시 refresh해줘야함!!
+
+      typingRef.child(chatRoom.id).child(user.uid).remove();
+
       setLoading(false);
       setContent("");
       setErrors([]);
@@ -139,21 +146,20 @@ function MessageForm() {
     }
   };
 
+  //리덕스에 갈필요없다.. db까지만 정보 수정 한후 listener통해 정보 보여주면됨!
+  const handleKeyDown = (event) => {
+    if (event.ctrlKey && event.keyCode === 13) {
+      handleSubmit();
+    } //컨트롤 + 엔터는 메세지를 보낼수있다!
+    if (content) {
+      typingRef.child(chatRoom.id).child(user.uid).set(user.displayName);
+    } else {
+      typingRef.child(chatRoom.id).child(user.uid).remove();
+    }
+  };
+
   return (
-    <div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="exampleForm.ControlTextarea1">
-          <Form.Control
-            value={content}
-            onChange={handleChange}
-            as="textarea"
-            rows={3}
-          />
-        </Form.Group>
-      </Form>
-
-      {console.log("percentage", percentage)}
-
+    <div className={styles.bigBox}>
       {!(percentage === 0 || percentage === 100) && (
         <ProgressBar
           variant="warning"
@@ -169,8 +175,48 @@ function MessageForm() {
           </p>
         ))}
       </div>
+      <div className={styles.inputBox}>
+        <div className={styles.inputLeft}>
+          <FaPlusCircle
+            onClick={handleOpenImageRef}
+            style={{ color: "white" }}
+            disabled={loading ? true : false}
+          />
+        </div>
+        <form className={styles.formBox} onSubmit={handleSubmit}>
+          <input
+            className={styles.input}
+            onKeyDown={handleKeyDown}
+            //  키를 누를때!
+            value={content}
+            onChange={handleChange}
+            placeholder="Message"
+          />
+        </form>
+        <div className={styles.inputRight}>
+          <FiSend
+            onClick={handleSubmit}
+            style={{ color: "white" }}
+            disabled={loading ? true : false}
+          />
+        </div>
+      </div>
+      {/* <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="exampleForm.ControlTextarea1">
+          <Form.Control
+            onKeyDown={handleKeyDown}
+            //  키를 누를때!
+            value={content}
+            onChange={handleChange}
+            as="textarea"
+            rows={2}
+          />
+        </Form.Group>
+      </Form> */}
 
-      <Row>
+      {/* {console.log("percentage", percentage)} */}
+
+      {/* <Row>
         <Col>
           <button
             onClick={handleSubmit}
@@ -192,7 +238,7 @@ function MessageForm() {
             UPLOAD
           </button>
         </Col>
-      </Row>
+      </Row> */}
 
       <input
         accept="image/jpeg, image/png"

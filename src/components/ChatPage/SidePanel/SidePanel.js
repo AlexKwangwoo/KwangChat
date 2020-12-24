@@ -3,25 +3,23 @@ import UserPanel from "./UserPanel";
 import Favorited from "./Favorited";
 import ChatRooms from "./ChatRooms";
 import DirectMessages from "./DirectMessages";
+import FindUser from "./FindUser";
+import styles from "./SidePanel.module.css";
 
 function SidePanel() {
   return (
-    <div
-      style={{
-        backgroundColor: "#7B83EB",
-        padding: "2rem",
-        minHeight: "100vh",
-        color: "white",
-        minWidth: "275px",
-      }}
-    >
-      <UserPanel />
+    <div className={styles.box}>
+      <FindUser />
+      <div className={styles.fdBox}>
+        <Favorited />
 
-      <Favorited />
+        {/* <ChatRooms /> */}
 
-      <ChatRooms />
-
-      <DirectMessages />
+        <DirectMessages />
+      </div>
+      <div className={styles.userBox}>
+        <UserPanel />
+      </div>
     </div>
   );
 }

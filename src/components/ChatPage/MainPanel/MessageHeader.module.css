@@ -1,0 +1,44 @@
+.bigBox {
+  width: 100%;
+  height: 52px;
+  border-bottom: 2px solid #202226;
+  background-color: #363a3f;
+  display: flex;
+  align-items: center;
+  color: white;
+  padding-right: 40px;
+  padding-left: 20px;
+}
+
+.chatName {
+  color: white;
+  font-weight: 600;
+}
+
+.des {
+  font-size: 14px;
+  margin-left: auto;
+  color: #6a6d73;
+  font-weight: 700;
+}
+.count {
+  font-size: 14px;
+  margin-left: auto;
+  color: #6a6d73;
+  font-weight: 700;
+}
+
+.input {
+  border: none;
+  outline: none;
+  background-color: #202226;
+  height: 25px;
+  color: #6a6d73;
+  padding-left: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 3px;
+  padding-bottom: 2px;
+  margin-left: auto;
+  width: 120px;
+}

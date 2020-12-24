@@ -1,0 +1,16 @@
+.box {
+  background-color: #2f3137;
+  width: 240px;
+  height: 100%;
+  border-radius: 15px 0 0 0;
+
+  color: #6f7076;
+}
+
+.fdBox {
+  padding: 13px;
+}
+
+.userBox {
+  padding-left: 12px;
+}

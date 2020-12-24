@@ -1,0 +1,45 @@
+.avatar {
+  height: 44px;
+  width: 44px;
+  border-radius: 44px;
+}
+
+.avatar:hover {
+  height: 44px;
+  width: 44px;
+  border-radius: 10px;
+  /* transform: 2ms; */
+}
+
+.ul {
+  text-align: center;
+}
+
+.name {
+  font-size: 12px;
+}
+
+.li {
+  margin-bottom: 10px;
+}
+
+.plus {
+  /* color: green; */
+}
+
+.plusBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2f3135;
+  height: 44px;
+  width: 44px;
+  border-radius: 40px;
+  margin: auto;
+  color: #4ca57b;
+}
+.plusBox:hover {
+  border-radius: 10px;
+  color: white;
+  background-color: #4ca57b;
+}

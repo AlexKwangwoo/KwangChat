@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import firebase from "../../../firebase";
 import mime from "mime-types";
 import { setPhotoURL } from "../../../redux/actions/user_action";
-import styles from "./UserPanel.module.css";
 
 function UserPanel() {
   const user = useSelector((state) => state.user.currentUser);
@@ -62,9 +61,9 @@ function UserPanel() {
   return (
     <div>
       {/* Logo */}
-      {/* <h3 style={{ color: "white" }}>
+      <h3 style={{ color: "white" }}>
         <IoIosChatboxes /> Chat App
-      </h3> */}
+      </h3>
 
       <div style={{ display: "flex", marginBottom: "1rem" }}>
         <Image
@@ -75,9 +74,7 @@ function UserPanel() {
 
         <Dropdown>
           <Dropdown.Toggle
-            style={{
-              background: "transparent",
-            }}
+            style={{ background: "transparent", boder: "0px" }}
             id="dropdown-basic"
           >
             {user && user.displayName}

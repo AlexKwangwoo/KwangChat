@@ -1,0 +1,26 @@
+.titlebox {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7c7e82;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  height: 36px;
+  width: 36px;
+  border-radius: 40px;
+}
+
+.name {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.li:hover {
+  background-color: #40444c79;
+  color: rgba(255, 255, 255, 0.692);
+}
+
+.li {
+  border-radius: 5px;
+}

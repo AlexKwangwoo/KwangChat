@@ -6,7 +6,6 @@ import {
   setCurrentChatRoom,
   setPrivateChatRoom,
 } from "../../../redux/actions/chatRoom_action";
-import styles from "./Favorited.module.css";
 
 export class Favorited extends Component {
   state = {
@@ -79,32 +78,26 @@ export class Favorited extends Component {
     favoritedChatRooms.length > 0 &&
     favoritedChatRooms.map((chatRoom) => (
       <li
-        className={styles.li}
         key={chatRoom.id}
         onClick={() => this.changeChatRoom(chatRoom)}
         style={{
           backgroundColor:
-            chatRoom.id === this.state.activeChatRoomId && " #40444c",
-          color: chatRoom.id === this.state.activeChatRoomId && " white",
-          marginBottom: "4px",
-          paddingLeft: "5px",
-          height: "46px",
-          display: "flex",
-          alignItems: "center",
+            chatRoom.id === this.state.activeChatRoomId && "#ffffff45",
         }}
       >
-        <img className={styles.avatar} src={chatRoom.createdBy.image} />
-        <span className={styles.name}> {chatRoom.name}</span>
+        # {chatRoom.name}
       </li>
     ));
 
   render() {
     const { favoritedChatRooms } = this.state;
-    console.log("favoritedChatRooms", favoritedChatRooms);
     return (
       <div>
-        <span className={styles.titlebox}>FAVORITED</span>
-        <ul className={styles.ul}>
+        <span style={{ display: "flex", alignItems: "center" }}>
+          <FaRegSmileBeam style={{ marginRight: "3px" }} />
+          FAVORITED (1)
+        </span>
+        <ul style={{ listStyleType: "none", padding: "0" }}>
           {this.renderFavoritedChatRooms(favoritedChatRooms)}
         </ul>
       </div>

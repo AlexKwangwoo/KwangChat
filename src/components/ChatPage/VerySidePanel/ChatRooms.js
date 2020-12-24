@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
 import { connect } from "react-redux";
 import firebase from "../../../firebase";
+import styles from "./ChatRooms.module.css";
 
 import {
   setCurrentChatRoom,
@@ -222,14 +223,24 @@ export class ChatRooms extends Component {
     chatRooms.length > 0 &&
     chatRooms.map((room) => (
       <li
+        className={styles.li}
         key={room.id}
-        style={{
-          backgroundColor:
-            room.id === this.state.activeChatRoomId && "#ffffff45",
-        }} //룸아이디와 셀랙된게 같으면 색깔을 변화하겠음!
+        // style={{
+        //   backgroundColor:
+        //     room.id === this.state.activeChatRoomId && "#ffffff45",
+        // }}
+        //룸아이디와 셀랙된게 같으면 색깔을 변화하겠음!
         onClick={() => this.changeChatRoom(room)} //현재 체팅방 설정!
       >
-        # {room.name}
+        <img
+          style={{
+            borderRadius: room.id === this.state.activeChatRoomId && "10px",
+          }}
+          className={styles.avatar}
+          src={room.createdBy.image}
+        />
+        <span className={styles.name}> {room.name}</span>
+
         <Badge style={{ float: "right", marginTop: "4px" }} variant="danger">
           {this.getNotificationCount(room)}
         </Badge>
@@ -237,31 +248,17 @@ export class ChatRooms extends Component {
     ));
 
   render() {
+    console.log("this.state.chatRooms", this.state.chatRooms);
     return (
       <div>
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <FaRegSmileWink style={{ marginRight: 3 }} />
-          CHAT ROOMS (1)
-          <FaPlus
-            onClick={this.handleShow}
-            style={{
-              position: "absolute",
-              right: 0,
-              cursor: "pointer",
-            }}
-          />
-        </div>
-
-        <ul style={{ listStyleType: "none", padding: 0 }}>
+        <ul className={styles.ul} style={{ listStyleType: "none", padding: 0 }}>
           {this.renderChatRooms(this.state.chatRooms)}
         </ul>
+        <div className={styles.plusBox} onClick={this.handleShow}>
+          {/* <FaRegSmileWink style={{ marginRight: 3 }} />
+          CHAT ROOMS (1) */}
+          <FaPlus className={styles.plus} />
+        </div>
 
         {/* ADD CHAT ROOM MODAL */}
 
