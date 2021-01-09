@@ -95,7 +95,8 @@ export class ChatRooms extends Component {
   ) => {
     let lastTotal = 0;
 
-    // 이미 notifications state 안에 알림 정보가 들어있는 채팅방과 그렇지 않은 채팅방을 나눠주기
+    // 이미 notifications state 안에 알림 정보가
+    //들어있는 채팅방과 그렇지 않은 채팅방을 나눠주기
     let index = notifications.findIndex(
       //findIndex는 조건을 만족하는 가장가까운 배열위치의 인덱스를 반환
       //없으면 -1.. ex [1,2,4] x>2 라고 치면 반환은 2 인덱스가 된다!

@@ -241,14 +241,14 @@ export class ChatRooms extends Component {
         />
         <span className={styles.name}> {room.name}</span>
 
-        <Badge style={{ float: "right", marginTop: "4px" }} variant="danger">
+        <Badge className={styles.badge} variant="danger">
           {this.getNotificationCount(room)}
         </Badge>
       </li>
     ));
 
   render() {
-    console.log("this.state.chatRooms", this.state.chatRooms);
+    // console.log("this.state.chatRooms", this.state.chatRooms);
     return (
       <div>
         <ul className={styles.ul} style={{ listStyleType: "none", padding: 0 }}>
@@ -263,10 +263,13 @@ export class ChatRooms extends Component {
         {/* ADD CHAT ROOM MODAL */}
 
         <Modal show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header closeButton>
+          <Modal.Header
+            closeButton
+            style={{ backgroundColor: "#363a3f", color: "white" }}
+          >
             <Modal.Title>Create a chat room</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={{ backgroundColor: "#363a3f", color: "white" }}>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Room name</Form.Label>
@@ -289,7 +292,7 @@ export class ChatRooms extends Component {
               </Form.Group>
             </Form>
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer style={{ backgroundColor: "#363a3f" }}>
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>

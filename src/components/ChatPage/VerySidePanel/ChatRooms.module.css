@@ -8,7 +8,7 @@
   height: 44px;
   width: 44px;
   border-radius: 10px;
-  /* transform: 2ms; */
+  transition: border-radius 0.2s;
 }
 
 .ul {
@@ -20,7 +20,12 @@
 }
 
 .li {
+  position: relative;
   margin-bottom: 10px;
+}
+
+.li:hover {
+  /* border-left: 2px solid white ; */
 }
 
 .plus {
@@ -42,4 +47,12 @@
   border-radius: 10px;
   color: white;
   background-color: #4ca57b;
+  transition: border-radius 0.2s;
+}
+
+.badge {
+  position: absolute;
+  right: 10px;
+  bottom: 20px;
+  width: 22px;
 }

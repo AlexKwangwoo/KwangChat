@@ -3,14 +3,23 @@
   width: 240px;
   height: 100%;
   border-radius: 15px 0 0 0;
-
   color: #6f7076;
 }
 
 .fdBox {
-  padding: 13px;
+  padding-left: 13px;
+  /* padding-right: 13px; */
+  padding-bottom: 13px;
+  padding-top: 13px;
+  height: calc(100% - 100px);
+}
+
+.insideBox {
 }
 
 .userBox {
   padding-left: 12px;
+  height: 47px;
+  background-color: #2b2c30;
+  padding-top: 5px;
 }

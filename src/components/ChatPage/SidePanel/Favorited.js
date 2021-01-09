@@ -75,7 +75,7 @@ export class Favorited extends Component {
     this.setState({ activeChatRoomId: room.id });
   };
 
-  renderFavoritedChatRooms = (favoritedChatRooms) =>
+  renderFavoritedChatRooms = (favoritedChatRooms, currentChat) =>
     favoritedChatRooms.length > 0 &&
     favoritedChatRooms.map((chatRoom) => (
       <li
@@ -83,9 +83,31 @@ export class Favorited extends Component {
         key={chatRoom.id}
         onClick={() => this.changeChatRoom(chatRoom)}
         style={{
-          backgroundColor:
-            chatRoom.id === this.state.activeChatRoomId && " #40444c",
-          color: chatRoom.id === this.state.activeChatRoomId && " white",
+          backgroundColor: chatRoom.id === currentChat && " #40444c",
+          color: chatRoom.id === currentChat && " white",
+          marginBottom: "4px",
+          paddingLeft: "5px",
+          height: "46px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <img className={styles.avatar} src={chatRoom.createdBy.image} />
+        <span className={styles.name}> {chatRoom.name}</span>
+      </li>
+    ));
+
+  renderFavoritedChatRoomsJust = (favoritedChatRooms) =>
+    favoritedChatRooms.length > 0 &&
+    favoritedChatRooms.map((chatRoom) => (
+      <li
+        className={styles.li}
+        key={chatRoom.id}
+        onClick={() => this.changeChatRoom(chatRoom)}
+        style={{
+          // backgroundColor:
+          //   chatRoom.id === this.state.activeChatRoomId && " #40444c",
+          // color: chatRoom.id === this.state.activeChatRoomId && " white",
           marginBottom: "4px",
           paddingLeft: "5px",
           height: "46px",
@@ -100,12 +122,20 @@ export class Favorited extends Component {
 
   render() {
     const { favoritedChatRooms } = this.state;
-    console.log("favoritedChatRooms", favoritedChatRooms);
+    // console.log("favoritedChatRooms", favoritedChatRooms);
     return (
       <div>
-        <span className={styles.titlebox}>FAVORITED</span>
+        <span className={styles.titlebox}>
+          FAVORITED({favoritedChatRooms.length})
+        </span>
         <ul className={styles.ul}>
-          {this.renderFavoritedChatRooms(favoritedChatRooms)}
+          {/* {this.renderFavoritedChatRooms(favoritedChatRooms)} */}
+          {this.props.currentChat !== null
+            ? this.renderFavoritedChatRooms(
+                favoritedChatRooms,
+                this.props.currentChat
+              )
+            : this.renderFavoritedChatRoomsJust(favoritedChatRooms)}
         </ul>
       </div>
     );
@@ -113,9 +143,16 @@ export class Favorited extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    user: state.user.currentUser,
-  };
+  if (state.chatRoom.currentChatRoom !== null) {
+    return {
+      user: state.user.currentUser,
+      currentChat: state.chatRoom.currentChatRoom.id,
+    };
+  } else {
+    return {
+      user: state.user.currentUser,
+    };
+  }
 };
 
 export default connect(mapStateToProps)(Favorited);

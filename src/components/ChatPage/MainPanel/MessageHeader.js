@@ -1,21 +1,33 @@
 import React, { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
-import Image from "react-bootstrap/Image";
-import Accordion from "react-bootstrap/Accordion";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import { FaLock } from "react-icons/fa";
-import { FaLockOpen } from "react-icons/fa";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import { AiOutlineSearch } from "react-icons/ai";
+// import Container from "react-bootstrap/Container";
+// import Row from "react-bootstrap/Row";
+// import Col from "react-bootstrap/Col";
+// import InputGroup from "react-bootstrap/InputGroup";
+// import FormControl from "react-bootstrap/FormControl";
+// import Image from "react-bootstrap/Image";
+// import Accordion from "react-bootstrap/Accordion";
+// import Card from "react-bootstrap/Card";
+// import Button from "react-bootstrap/Button";
+// import { FaLock } from "react-icons/fa";
+// import { FaLockOpen } from "react-icons/fa";
+// import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+// import { AiOutlineSearch } from "react-icons/ai";
+import Modal from "react-bootstrap/Modal";
 import { useSelector } from "react-redux";
 import firebase from "../../../firebase";
 import { Media } from "react-bootstrap";
+import {
+  InfoCircleFill,
+  BookmarkHeartFill,
+  BookmarkHeart,
+  EmojiHeartEyesFill,
+  HeartFill,
+  Heart,
+  PeopleFill,
+  PersonFill,
+} from "react-bootstrap-icons";
 import styles from "./MessageHeader.module.css";
+// import InfoModal from "./InfoModal";
 
 function MessageHeader({ handleSearchChange }) {
   const chatRoom = useSelector((state) => state.chatRoom.currentChatRoom);
@@ -26,6 +38,7 @@ function MessageHeader({ handleSearchChange }) {
   const usersRef = firebase.database().ref("users");
   const user = useSelector((state) => state.user.currentUser);
   const userPosts = useSelector((state) => state.chatRoom.userPosts);
+  const [show, setShow] = useState(false);
 
   //데이터 베이스 한번가져옴.. 나머지 는 데베에서 결과 바껴도.. 저장되고..
   // 다시 킬때 최종결과 데베에서 다시 가져옴!
@@ -43,13 +56,13 @@ function MessageHeader({ handleSearchChange }) {
       .child("favorited")
       .once("value")
       .then((data) => {
-        console.log("data초기", data.val());
+        // console.log("data초기", data.val());
         if (data.val() !== null) {
           const chatRoomIds = Object.keys(data.val());
           //이렇게 하면 좋아요 누른 방의 id가 chatRoomIds에 들어간다
 
-          console.log("data.val()", data.val());
-          console.log("chatRoomIds", chatRoomIds);
+          // console.log("data.val()", data.val());
+          // console.log("chatRoomIds", chatRoomIds);
           const isAlreadyFavorited = chatRoomIds.includes(chatRoomId);
           //여기서 포함됬는지 안했는지 알아본다!
           console.log("isAlreadyFavorited", isAlreadyFavorited);
@@ -85,6 +98,14 @@ function MessageHeader({ handleSearchChange }) {
     }
   };
 
+  const handleInfo = () => {
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+  };
+
   //post count 뿌려줘야한다!
   //userPosts 리덕스를통해 가져옴! mainpanel에서 준정보!
   const renderUserPosts = (userPosts) =>
@@ -106,8 +127,8 @@ function MessageHeader({ handleSearchChange }) {
             alt={val.name}
           />
           <Media.Body>
-            <h6>{key}</h6>
-            <p>{val.count} 개</p>
+            <h6 className={styles.name}>{key}</h6>
+            <p className={styles.number}>{val.count} message(s)</p>
           </Media.Body>
         </Media>
       ));
@@ -118,26 +139,17 @@ function MessageHeader({ handleSearchChange }) {
 
       <div className={styles.chatName}>
         {isPrivateChatRoom ? (
-          <FaLock style={{ marginBottom: "10px" }} />
+          <PersonFill style={{ marginBottom: "5px" }} size={25} />
         ) : (
           // 열쇠 아이콘!!
-          <FaLockOpen style={{ marginBottom: "10px" }} />
+          <PeopleFill style={{ marginBottom: "5px" }} size={25} />
         )}
 
-        {chatRoom && chatRoom.name}
-        {!isPrivateChatRoom && (
-          <span style={{ cursor: "pointer" }} onClick={handleFavorite}>
-            {isFavorited ? (
-              <MdFavorite style={{ marginBottom: "10px" }} />
-            ) : (
-              <MdFavoriteBorder style={{ marginBottom: "10px" }} />
-            )}
-          </span>
-        )}
+        <span className={styles.roomName}>{chatRoom && chatRoom.name}</span>
       </div>
 
-      <div className={styles.des}>Description</div>
-      <div className={styles.count}>Posts Count</div>
+      <div className={styles.des}></div>
+      <div className={styles.count}></div>
       <div className={styles.input}>
         {/* <InputGroup className="mb-3">
           <InputGroup.Prepend>
@@ -145,6 +157,7 @@ function MessageHeader({ handleSearchChange }) {
               <AiOutlineSearch />
             </InputGroup.Text>
           </InputGroup.Prepend> */}
+
         <form>
           <input
             className={styles.input}
@@ -153,6 +166,28 @@ function MessageHeader({ handleSearchChange }) {
           />
         </form>
         {/* </InputGroup> */}
+      </div>
+      <div className={styles.icon}>
+        <span
+          style={{
+            cursor: "pointer",
+            marginLeft: "8px",
+          }}
+          onClick={handleInfo}
+        >
+          <InfoCircleFill size={20} />
+        </span>
+        {!isPrivateChatRoom && (
+          <span
+            style={{
+              cursor: "pointer",
+              marginLeft: "8px",
+            }}
+            onClick={handleFavorite}
+          >
+            {isFavorited ? <HeartFill size={17} /> : <Heart size={17} />}
+          </span>
+        )}
       </div>
       {/* {!isPrivateChatRoom && (
         <div>
@@ -166,6 +201,25 @@ function MessageHeader({ handleSearchChange }) {
           </p>
         </div>
       )} */}
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header
+          closeButton
+          style={{ backgroundColor: "#363a3f", color: "white" }}
+        >
+          <Modal.Title>Infomation Of This Room</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#363a3f" }}>
+          <div className={styles.upBox}>
+            <span className={styles.discription}>Discription</span>
+            <div className={styles.discriptionInside}>
+              {chatRoom && chatRoom.description}
+            </div>
+          </div>
+          <div className={styles.downBox}>
+            {userPosts && renderUserPosts(userPosts)}
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

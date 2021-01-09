@@ -20,7 +20,7 @@ function Message({ message, user }) {
       return message.user.id === user.uid;
     }
   };
-  //메세지가 내꺼인지 아닌지 알아야한다!
+  //메세지가 내꺼인지 아닌지 알아야한다! (색바꾸기위해.. 하지만 없앴음!)
 
   return (
     <div className={styles.bigBox}>

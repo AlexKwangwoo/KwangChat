@@ -1,3 +1,49 @@
 .mainBox {
   height: 100%;
 }
+
+.newMessage {
+  font-size: 35px;
+  color: white;
+  font-weight: 700;
+}
+
+.newMessageImage {
+  margin-top: 100px;
+  border-radius: 50px;
+  width: 80px;
+  height: 80px;
+}
+
+.text {
+  font-size: 16px;
+  color: #95969c;
+  padding-bottom: 15px;
+  border-bottom: solid #5c6978 0.1px;
+  width: 97%;
+}
+
+.scroll {
+  /* overflow: none !important; */
+}
+
+.scrollbox {
+  padding-top: 20px;
+  overflow-x: hidden;
+}
+
+.outBox {
+  width: 100%;
+  height: 85.5vh;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #363a3f;
+}
+
+.typing {
+  color: white;
+  font-size: 12px;
+}

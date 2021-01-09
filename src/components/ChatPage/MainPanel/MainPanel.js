@@ -7,6 +7,8 @@ import firebase from "../../../firebase";
 import { setUserPosts } from "../../../redux/actions/chatRoom_action";
 import Skeleton from "../../../commons/components/Skeleton";
 import styles from "./MainPanel.module.css";
+import Scrollbars from "react-custom-scrollbars";
+// import ScrollBars from "react-scrollbar";
 
 export class MainPanel extends Component {
   messageEndRef = React.createRef();
@@ -25,7 +27,7 @@ export class MainPanel extends Component {
 
   componentDidMount() {
     const { chatRoom } = this.props;
-    console.log(this.props);
+    // console.log(this.props);
 
     if (chatRoom) {
       this.addMessagesListeners(chatRoom.id);
@@ -35,7 +37,7 @@ export class MainPanel extends Component {
 
   componentDidUpdate() {
     if (this.messageEndRef) {
-      this.messageEndRef.scrollIntoView({ behavior: "smooth" });
+      this.messageEndRef.scrollIntoView();
     }
   } //타이핑 할때마다 실행! 자동으로 스크롤 위치 가주기!!
 
@@ -191,24 +193,128 @@ export class MainPanel extends Component {
         key={message.timestamp}
         message={message}
         user={this.props.user} //메세지 누구껀지.. 위치 정해야해서 알아야함!
-      />
+      /> // 내 매시지면.. 색줄려고.. 하지만 없앴음
     ));
 
   renderTypingUsers = (typingUsers) =>
     typingUsers.length > 0 &&
-    typingUsers.map((user) => <span>{user.name} is typing now..</span>);
+    typingUsers.map((user) => (
+      <span className={styles.typing}>{user.name} is typing now..</span>
+    ));
 
-  renderMessageSkeleton = (loading) =>
-    loading && (
-      <>
-        {/* [1,2,3,4,5,6,7,8,9,10] 이랑 똑같음.. 10개 넣음*/}
-        {[...Array(10)].map((v, i) => (
-          <Skeleton key={i} />
-        ))}
-      </>
-    );
+  renderMessageSkeleton = (loading, messages) => {
+    // console.log("hahaha");
+    if (messages.length < 10) {
+      loading && (
+        <>
+          {/* [1,2,3,4,5,6,7,8,9,10] 이랑 똑같음.. 10개 넣음*/}
+          {[...Array(messages.length)].map((v, i) => (
+            <Skeleton key={i} />
+          ))}
+        </>
+      );
+    } else {
+      loading && (
+        <>
+          {/* [1,2,3,4,5,6,7,8,9,10] 이랑 똑같음.. 10개 넣음*/}
+          {[...Array(10)].map((v, i) => (
+            <Skeleton key={i} />
+          ))}
+        </>
+      );
+    }
+  };
+
+  renderNewMessage = (messages) => {
+    const { chatRoom } = this.props;
+    // console.log("chatRoom", chatRoom);
+    if (chatRoom) {
+      if (chatRoom.createdBy) {
+        console.log("createdBy");
+        return (
+          chatRoom && (
+            <>
+              <img
+                className={styles.newMessageImage}
+                src={chatRoom.createdBy.image}
+                alt={chatRoom.createdBy.image}
+              />
+              <div className={styles.newMessage}>{chatRoom.name}</div>
+              <div className={styles.text}>
+                This is the beginning of a message history with @{chatRoom.name}
+                .
+              </div>
+              <div className={styles.line}></div>
+            </>
+          )
+        );
+      } else {
+        return (
+          chatRoom && (
+            <>
+              <img
+                className={styles.newMessageImage}
+                src={chatRoom.image}
+                alt={chatRoom.image}
+              />
+              <div className={styles.newMessage}>{chatRoom.name}</div>
+              <div className={styles.text}>
+                This is the beginning of your direct message history with @
+                {chatRoom.name}.
+              </div>
+              <div className={styles.line}></div>
+            </>
+          )
+        );
+      }
+    }
+  };
+
+  // renderThumb = ({ style, ...props }) => {
+  //   const thumbStyle = {
+  //     borderRadius: 6,
+  //     backgroundColor: "rgba(35, 49, 86, 0.8)",
+  //   };
+  //   return <div style={{ ...style, ...thumbStyle }} {...props} />;
+  // };
+
+  // CustomScrollbars = (props) => (
+  //   <Scrollbars
+  //     renderThumbHorizontal={renderThumb}
+  //     renderThumbVertical={renderThumb}
+  //     {...props}
+  //   />
+  // );
 
   render() {
+    const renderThumb = ({ style, ...props }) => {
+      const thumbStyle = {
+        borderRadius: 6,
+        backgroundColor: "black",
+      };
+      return <div style={{ ...style, ...thumbStyle }} {...props} />;
+    };
+
+    const renderThumb_h = ({ style, ...props }) => {
+      const thumbStyle = {
+        borderRadius: 6,
+        backgroundColor: "black",
+        // overflowX: "none",
+      };
+      return <div style={{ ...style, ...thumbStyle }} {...props} />;
+    };
+
+    const CustomScrollbars = (props) => (
+      <Scrollbars
+        renderThumbHorizontal={renderThumb_h}
+        renderView={(props) => (
+          <div {...props} style={{ ...props.style, overflowX: "hidden" }} />
+        )}
+        renderThumbVertical={renderThumb}
+        {...props}
+      />
+    );
+
     const {
       messages,
       searchTerm,
@@ -217,31 +323,33 @@ export class MainPanel extends Component {
       messagesLoading,
     } = this.state;
 
-    // console.log("searchTerm", searchTerm);
+    // console.log("this.state", this.state);
+    // console.log("messages", messages);
     return (
       <div className={styles.mainBox}>
         <MessageHeader handleSearchChange={this.handleSearchChange} />
 
-        <div
-          style={{
-            width: "100%",
-            height: "830px",
-            paddingTop: "1rem",
-            paddingBottom: "1rem",
-            paddingLeft: "1rem",
-            overflowY: "auto",
-            backgroundColor: "#363a3f",
-          }}
-        >
-          {this.renderMessageSkeleton(messagesLoading)}
-          {searchTerm
-            ? this.renderMessages(searchResults)
-            : this.renderMessages(messages)}
-          {/* 검색어 있으면 검색어의 배열만 보여준다! */}
+        <div className={styles.outBox}>
+          <CustomScrollbars
+            style={{ width: "98%" }}
+            autoHide
+            autoHideTimeout={500}
+            autoHideDuration={200}
+          >
+            <div className={styles.scrollbox}>
+              {messages.length > 0
+                ? this.renderMessageSkeleton(messagesLoading, messages)
+                : this.renderNewMessage(messagesLoading, messages)}
+              {searchTerm
+                ? this.renderMessages(searchResults)
+                : this.renderMessages(messages)}
+              {/* 검색어 있으면 검색어의 배열만 보여준다! */}
 
-          {this.renderTypingUsers(typingUsers)}
-          <div ref={(node) => (this.messageEndRef = node)} />
-          {/* node => <div></div> 현재 div>를 가리킴!! */}
+              {this.renderTypingUsers(typingUsers)}
+              <div ref={(node) => (this.messageEndRef = node)} />
+              {/* node => <div></div> 현재 div>를 가리킴!! */}
+            </div>
+          </CustomScrollbars>
         </div>
 
         <MessageForm />

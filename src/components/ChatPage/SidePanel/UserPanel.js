@@ -7,6 +7,7 @@ import firebase from "../../../firebase";
 import mime from "mime-types";
 import { setPhotoURL } from "../../../redux/actions/user_action";
 import styles from "./UserPanel.module.css";
+import moment from "moment";
 
 function UserPanel() {
   const user = useSelector((state) => state.user.currentUser);
@@ -23,7 +24,13 @@ function UserPanel() {
 
   const handleUploadImage = async (event) => {
     const file = event.target.files[0];
-
+    var today = new Date();
+    const time =
+      today.getMonth() +
+      today.getDate() +
+      today.getHours() +
+      today.getMinutes() +
+      today.getSeconds();
     const metadata = { contentType: mime.lookup(file.name) };
     // mime을 통해 파일 확장자를 바로 알수있다!
 
@@ -32,7 +39,7 @@ function UserPanel() {
       let uploadTaskSnapshot = await firebase
         .storage()
         .ref()
-        .child(`user_image/${user.uid}`) //user_image폴더 안에 넣겠음 storage의
+        .child(`user_image/${time}`) //user_image폴더 안에 넣겠음 storage의
         .put(file, metadata); //데이터를 file에 넣고 metadata 에 확장자를 넣어준다
 
       let downloadURL = await uploadTaskSnapshot.ref.getDownloadURL();
@@ -58,50 +65,65 @@ function UserPanel() {
       alert(error);
     }
   };
-
+  // console.log("user", user);
+  const dropstyle = {
+    background: "transparent",
+    border: "none",
+    marginLeft: "5px",
+  };
   return (
-    <div>
-      {/* Logo */}
-      {/* <h3 style={{ color: "white" }}>
+    user && (
+      <div className={styles.UserBox}>
+        {/* Logo */}
+        {/* <h3 style={{ color: "white" }}>
         <IoIosChatboxes /> Chat App
       </h3> */}
 
-      <div style={{ display: "flex", marginBottom: "1rem" }}>
-        <Image
-          src={user && user.photoURL}
-          style={{ width: "30p", height: "30px", marginTop: "3px" }}
-          roundedCircle
+        <div style={{ display: "flex", marginBottom: "1rem" }}>
+          <Image
+            src={user && user.photoURL}
+            style={{ width: "30p", height: "30px", marginTop: "3px" }}
+            roundedCircle
+          />
+          {/* {user.displayName} */}
+          <Dropdown>
+            <Dropdown.Toggle
+              style={dropstyle}
+              variant="secondary"
+              // className={styles.dropdown}
+              id="dropdown-basic"
+            >
+              {user && user.displayName}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className={styles.menu}>
+              <Dropdown.Item
+                // style={{
+                //   backgroundColor: "black",
+                // }}
+                className={styles.item}
+                onClick={handleOpenImageRef}
+              >
+                Change the profile picture
+              </Dropdown.Item>
+              <Dropdown.Item className={styles.item} onClick={handleLogout}>
+                LogOut
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+
+        <input
+          onChange={handleUploadImage}
+          accept="image/jpeg, image/png"
+          style={{ display: "none" }}
+          ref={inputOpenImageRef}
+          type="file"
         />
-
-        <Dropdown>
-          <Dropdown.Toggle
-            style={{
-              background: "transparent",
-            }}
-            id="dropdown-basic"
-          >
-            {user && user.displayName}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={handleOpenImageRef}>
-              Change the profile picture
-            </Dropdown.Item>
-            <Dropdown.Item onClick={handleLogout}>LogOut</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
-      <input
-        onChange={handleUploadImage}
-        accept="image/jpeg, image/png"
-        style={{ display: "none" }}
-        ref={inputOpenImageRef}
-        type="file"
-      />
-      {/* 숨겨져있다.. ref통해서 클릭시킬것임! 
+        {/* 숨겨져있다.. ref통해서 클릭시킬것임! 
       accept 통해서 파일 속성 정할수있음!*/}
-    </div>
+      </div>
+    )
   );
 }
 

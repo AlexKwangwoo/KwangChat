@@ -21,6 +21,17 @@ export class DirectMessages extends Component {
     } //바로 변수로 넣어줌!
   }
 
+  //여기로 인해 favorite 갯수 자꾸 바뀌는거 고쳤음!!
+  componentWillUnmount() {
+    if (this.props.user) {
+      this.removeListener();
+    }
+  }
+
+  removeListener = () => {
+    this.state.usersRef.off();
+  };
+
   addUsersListeners = (currentUserId) => {
     //유저가 추가될때마다 반응함!
     const { usersRef } = this.state;
@@ -51,10 +62,12 @@ export class DirectMessages extends Component {
   };
 
   changeChatRoom = (user) => {
+    console.log("user", user);
     const chatRoomId = this.getChatRoomId(user.uid);
     const chatRoomData = {
       id: chatRoomId,
       name: user.name,
+      image: user.image,
     };
 
     this.props.dispatch(setCurrentChatRoom(chatRoomData));
@@ -68,15 +81,35 @@ export class DirectMessages extends Component {
     this.setState({ activeChatRoom: userId });
   };
 
-  renderDirectMessages = (users) =>
+  renderDirectMessages = (users, currentChat) =>
     users.length > 0 &&
     users.map((user) => (
       <li
         className={styles.li}
         key={user.uid}
         style={{
-          backgroundColor: user.uid === this.state.activeChatRoom && " #40444c",
-          color: user.uid === this.state.activeChatRoom && " white",
+          backgroundColor: user.name === currentChat && "#40444c",
+          color: user.name === currentChat && " white",
+          marginBottom: "4px",
+          paddingLeft: "5px",
+          height: "46px",
+          display: "flex",
+          alignItems: "center",
+        }} //내가 클릭한 방과 uid가 같으면 색주기!
+        onClick={() => this.changeChatRoom(user)}
+      >
+        <img className={styles.avatar} src={user.image} />
+        <span className={styles.name}>{user.name}</span>
+      </li>
+    ));
+
+  renderDirectMessagesJust = (users) =>
+    users.length > 0 &&
+    users.map((user) => (
+      <li
+        className={styles.li}
+        key={user.uid}
+        style={{
           marginBottom: "4px",
           paddingLeft: "5px",
           height: "46px",
@@ -91,14 +124,23 @@ export class DirectMessages extends Component {
     ));
 
   render() {
+    // console.log("currentChat", currentChat);
+    // console.log("users", users);
     const { users } = this.state;
-    console.log(users);
+    if (this.props.currentChat) {
+      console.log("currentChat", this.props.currentChat);
+      console.log("users있다", users);
+    } else {
+      console.log("users", users);
+    }
     return (
       <div>
         <div className={styles.titlebox}>DIRECT MESSAGES</div>
 
         <ul style={{ listStyleType: "none", padding: 0 }}>
-          {this.renderDirectMessages(users)}
+          {this.props.currentChat !== null
+            ? this.renderDirectMessages(users, this.props.currentChat)
+            : this.renderDirectMessagesJust(users)}
         </ul>
       </div>
     );
@@ -106,9 +148,17 @@ export class DirectMessages extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    user: state.user.currentUser,
-  };
+  // console.log("state.chatRoom.currentChatRoom", state.chatRoom.currentChatRoom);
+  if (state.chatRoom.currentChatRoom !== null) {
+    return {
+      user: state.user.currentUser,
+      currentChat: state.chatRoom.currentChatRoom.name,
+    };
+  } else {
+    return {
+      user: state.user.currentUser,
+    };
+  }
 }; //리덕스 연결!!
 
 export default connect(mapStateToProps)(DirectMessages);
