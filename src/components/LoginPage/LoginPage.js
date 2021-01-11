@@ -12,11 +12,18 @@ function LoginPage() {
     try {
       setLoading(true);
 
-      await firebase
+      let loginUser = await firebase
         .auth()
         .signInWithEmailAndPassword(data.email, data.password);
+      // console.log("loginUser", loginUser);
+
+      // 유저 로그인 상태 저장
+      await firebase.database().ref("users").child(loginUser.user.uid).update({
+        state: "online",
+      });
 
       setLoading(false);
+      //여기서 로그인 햇을때 user의 state를 true로 바꿔준다!
     } catch (error) {
       setErrorFromSubmit(error.message);
       setLoading(false);

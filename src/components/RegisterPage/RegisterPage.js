@@ -20,7 +20,7 @@ function RegisterPage() {
       let createdUser = await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password);
-      // console.log("createdUser", createdUser);
+      console.log("createdUser", createdUser);
 
       await createdUser.user.updateProfile({
         displayName: data.name,

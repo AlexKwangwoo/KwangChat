@@ -28,7 +28,7 @@ export class MainPanel extends Component {
   componentDidMount() {
     const { chatRoom } = this.props;
     // console.log(this.props);
-
+    this.userPostsCount(this.state.messages);
     if (chatRoom) {
       this.addMessagesListeners(chatRoom.id);
       this.addTypingListeners(chatRoom.id);
@@ -169,21 +169,44 @@ export class MainPanel extends Component {
   };
 
   userPostsCount = (messages) => {
-    let userPosts = messages.reduce((acc, message) => {
-      if (message.user.name in acc) {
-        //이름이 있다면 count+1
-        acc[message.user.name].count += 1;
-      } else {
-        //이름이 없다면.. 1
-        acc[message.user.name] = {
-          image: message.user.image,
-          count: 1,
-        };
-      }
-      return acc;
-    }, {});
-    this.props.dispatch(setUserPosts(userPosts));
-    //여길통해 리덕스로 보내준다!
+    //   let userPosts = messages.reduce((acc, message) => {
+    //     if (message.user.name in acc) {
+    //       //이름이 있다면 count+1
+    //       acc[message.user.name].count += 1;
+    //     } else {
+    //       //이름이 없다면.. 1
+    //       acc[message.user.name] = {
+    //         image: message.user.image,
+    //         count: 1,
+    //       };
+    //     }
+    //     return acc;
+    //   }, {});
+    //   this.props.dispatch(setUserPosts(userPosts));
+    //   //여길통해 리덕스로 보내준다!
+    // };
+
+    if (messages.length === 0) {
+      // console.log("here");
+      this.props.dispatch(setUserPosts(null));
+    } else {
+      // console.log("messages", messages);
+      // console.log("notnull");
+      let userPosts = messages.reduce((acc, message) => {
+        if (message.user.name in acc) {
+          //이름이 있다면 count+1
+          acc[message.user.name].count += 1;
+        } else {
+          //이름이 없다면.. 1
+          acc[message.user.name] = {
+            image: message.user.image,
+            count: 1,
+          };
+        }
+        return acc;
+      }, {});
+      this.props.dispatch(setUserPosts(userPosts));
+    }
   };
 
   renderMessages = (messages) =>

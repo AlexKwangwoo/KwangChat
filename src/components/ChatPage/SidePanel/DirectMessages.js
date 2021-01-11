@@ -37,16 +37,37 @@ export class DirectMessages extends Component {
     const { usersRef } = this.state;
     let usersArray = [];
     usersRef.on("child_added", (DataSnapshot) => {
+      console.log("add로 올지");
       if (currentUserId !== DataSnapshot.key) {
+        // console.log("DataSnapshot새로?", DataSnapshot.val());
         //내이름은 DM에 뿌리면 안된다!
         //DataSnapshot.key는 추가된 상대 UID이다!
         let user = DataSnapshot.val();
         user["uid"] = DataSnapshot.key;
-        user["status"] = "offline"; //접속 했는지 안했는지
+        // user["status"] = "offline"; //접속 했는지 안했는지
         usersArray.push(user);
         this.setState({ users: usersArray });
+        // console.log("users", this.state.users);
       }
     }); //결국 user라는 변수에.. DB에있는 user내용 + UID + status를 추가해준다!
+    usersRef.on("child_changed", (DataSnapshot) => {
+      let usersArray = this.state.users;
+      if (currentUserId !== DataSnapshot.key) {
+        // console.log("usersArray", usersArray);
+        // console.log("changed로 올지", DataSnapshot.val());
+        let newUserState = DataSnapshot.val();
+
+        for (var i in usersArray) {
+          // console.log("usersArray[i]", usersArray[i]);
+          // console.log("newUserState.uid", newUserState.uid);
+          if (usersArray[i].image === newUserState.image) {
+            usersArray[i] = newUserState;
+            this.setState({ users: usersArray });
+            // console.log("한번보자", this.state.users);
+          }
+        }
+      }
+    });
   };
 
   getChatRoomId = (userId) => {
@@ -77,6 +98,22 @@ export class DirectMessages extends Component {
     //DM은 private 룸인걸 알려줌!
   };
 
+  // <li
+  //   key={user.uid}
+  //   style={{
+  //     backgroundColor:
+  //       user.uid === this.state.activeChatRoom && "#ffffff45",
+  //   }} //내가 클릭한 방과 uid가 같으면 색주기!
+  //   onClick={() => this.changeChatRoom(user)}
+  // >
+  //   # {user.name}
+  // </li>
+  // addStateListeners = (users) =>
+  //   users.length > 0 &&
+  //   users.map((user) =>
+  //     user.state === "online" ? <li>online</li> : <li>offline</li>
+  //   );
+
   setActiveChatRoom = (userId) => {
     this.setState({ activeChatRoom: userId });
   };
@@ -99,6 +136,14 @@ export class DirectMessages extends Component {
         onClick={() => this.changeChatRoom(user)}
       >
         <img className={styles.avatar} src={user.image} />
+        {user.state === "online" ? (
+          <div className={styles.online}></div>
+        ) : (
+          <div className={styles.offline}>
+            {/* <div className={styles.offline}></div> */}
+            <div className={styles.offlintwo}></div>
+          </div>
+        )}
         <span className={styles.name}>{user.name}</span>
       </li>
     ));
@@ -120,6 +165,14 @@ export class DirectMessages extends Component {
       >
         <img className={styles.avatar} src={user.image} />
         <span className={styles.name}>{user.name}</span>
+        {user.state === "online" ? (
+          <div className={styles.online}></div>
+        ) : (
+          <div className={styles.offline}>
+            {/* <div className={styles.offline}></div> */}
+            <div className={styles.offlintwo}></div>
+          </div>
+        )}
       </li>
     ));
 
@@ -127,15 +180,15 @@ export class DirectMessages extends Component {
     // console.log("currentChat", currentChat);
     // console.log("users", users);
     const { users } = this.state;
-    if (this.props.currentChat) {
-      console.log("currentChat", this.props.currentChat);
-      console.log("users있다", users);
-    } else {
-      console.log("users", users);
-    }
+    // if (this.props.currentChat) {
+    //   console.log("currentChat", this.props.currentChat);
+    //   console.log("users있다", users);
+    // } else {
+    //   console.log("users", users);
+    // }
     return (
       <div>
-        <div className={styles.titlebox}>DIRECT MESSAGES</div>
+        <div className={styles.titlebox}>DIRECT MESSAGES({users.length})</div>
 
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {this.props.currentChat !== null

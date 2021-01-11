@@ -15,6 +15,9 @@ function UserPanel() {
   const inputOpenImageRef = useRef();
 
   const handleLogout = () => {
+    firebase.database().ref("users").child(user.uid).update({
+      state: "offline",
+    });
     firebase.auth().signOut(); //로그아웃하기!
   };
 

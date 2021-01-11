@@ -9,6 +9,7 @@
   height: 36px;
   width: 36px;
   border-radius: 40px;
+  position: relative;
 }
 
 .name {
@@ -22,5 +23,37 @@
 }
 
 .li {
+  width: 95%;
   border-radius: 5px;
+}
+
+.online {
+  position: absolute;
+  margin-top: 28px;
+  left: 28px;
+  border-radius: 10px;
+  width: 16px;
+  height: 16px;
+  background-color: #43b581;
+  border: 3px solid #363a3f;
+}
+
+.offline {
+  position: absolute;
+  margin-top: 28px;
+  left: 28px;
+  border-radius: 10px;
+  width: 16px;
+  height: 16px;
+  background-color: #7c7e82;
+  border: 3px solid #363a3f;
+}
+
+.offlintwo {
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  margin-top: 2px;
+  border-radius: 10px;
+  background-color: #363a3f;
 }

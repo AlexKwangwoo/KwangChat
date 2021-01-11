@@ -33,6 +33,23 @@ export class Favorited extends Component {
   addListeners = (userId) => {
     const { usersRef } = this.state;
 
+    // usersRef
+    // .child(userId)
+    // .child("state")
+    // .on("child_updated", (DataSnapshot) => {
+    //   //데이터가 추가될때 반응한다!!
+    //   const favoritedChatRoom = {
+    //     id: DataSnapshot.key,
+    //     ...DataSnapshot.val(),
+    //   };
+    //   this.setState({
+    //     favoritedChatRooms: [
+    //       ...this.state.favoritedChatRooms,
+    //       favoritedChatRoom,
+    //     ],
+    //   });
+    // });
+
     usersRef
       .child(userId)
       .child("favorited")

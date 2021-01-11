@@ -116,22 +116,55 @@ function MessageHeader({ handleSearchChange }) {
     Object.entries(userPosts)
       .sort((a, b) => b[1].count - a[1].count)
       //여기까지 카운트가 큰순으로 정렬된다.. a-b는 작은순에서큰순!!
-      .map(([key, val], i) => (
-        <Media key={i}>
-          <img
-            style={{ borderRadius: 25 }}
-            width={48}
-            height={48}
-            className="mr-3"
-            src={val.image}
-            alt={val.name}
-          />
-          <Media.Body>
-            <h6 className={styles.name}>{key}</h6>
-            <p className={styles.number}>{val.count} message(s)</p>
-          </Media.Body>
-        </Media>
-      ));
+      .map(([key, val], i) =>
+        userPosts ? (
+          <Media key={i}>
+            <img
+              style={{ borderRadius: 25 }}
+              width={48}
+              height={48}
+              className="mr-3"
+              src={val.image}
+              alt={val.name}
+            />
+            <Media.Body>
+              <h6 className={styles.name}>{key}</h6>
+              <p className={styles.number}>{val.count} message(s)</p>
+            </Media.Body>
+          </Media>
+        ) : null
+      );
+  // if (userPosts === null) {
+  //   <div>There is no post</div>;
+  // } else {
+  //   //sort 쓰기위해선 키값 , value 하나 인배열로 바꿔줘야한다!
+  //   //userPosts는 객체이므로..   Object.entries(userPosts)를 통해
+  //   // [[0:"username1", 1:[count:2, image:"~~"],[0:"username1", 1:[count:2, image:"~~"]]
+  //   // 되어서 나온다.. 그래서 각 배열속의 배열의 1인덱스의 count가 필요!
+  //   Object.entries(userPosts)
+  //     .sort((a, b) => b[1].count - a[1].count)
+  //     //여기까지 카운트가 큰순으로 정렬된다.. a-b는 작은순에서큰순!!
+  //     .map(([key, val], i) => (
+  //       <Media key={i}>
+  //         <img
+  //           style={{ borderRadius: 25 }}
+  //           width={48}
+  //           height={48}
+  //           className="mr-3"
+  //           src={val.image}
+  //           alt={val.name}
+  //         />
+  //         <Media.Body>
+  //           <h6 className={styles.name}>{key}</h6>
+  //           <p className={styles.number}>{val.count} message(s)</p>
+  //         </Media.Body>
+  //       </Media>
+  //     ));
+  // }
+  //sort 쓰기위해선 키값 , value 하나 인배열로 바꿔줘야한다!
+  //userPosts는 객체이므로..   Object.entries(userPosts)를 통해
+  // [[0:"username1", 1:[count:2, image:"~~"],[0:"username1", 1:[count:2, image:"~~"]]
+  // 되어서 나온다.. 그래서 각 배열속의 배열의 1인덱스의 count가 필요!
 
   return (
     <div className={styles.bigBox}>

@@ -4,6 +4,7 @@
   height: 100%;
   border-radius: 15px 0 0 0;
   color: #6f7076;
+  padding-right: 4px;
 }
 
 .fdBox {
@@ -21,5 +22,5 @@
   padding-left: 12px;
   height: 47px;
   background-color: #2b2c30;
-  padding-top: 5px;
+  padding-top: 7px;
 }
