@@ -1,5 +1,4 @@
 .OutsideBox {
-  height: 100vh;
   box-sizing: border-box;
   background-color: #202226;
 }
@@ -8,6 +7,7 @@
 }
 
 .bigBox {
+  height: calc(100vh - 25px);
   width: 100%;
   display: flex;
   background-color: #202226;
@@ -24,6 +24,7 @@
 }
 
 .side {
+  height: calc(100vh - 25px);
   background-color: #202226;
 }
 

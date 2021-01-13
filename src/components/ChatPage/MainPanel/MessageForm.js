@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
-import Form from "react-bootstrap/Form";
+// import Form from "react-bootstrap/Form";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+// import Row from "react-bootstrap/Row";
+// import Col from "react-bootstrap/Col";
 import firebase from "../../../firebase";
 import { useSelector } from "react-redux";
 import mime from "mime-types";
@@ -55,7 +55,11 @@ function MessageForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!content) {
-      setErrors((prev) => prev.concat("Type contents first"));
+      setErrors((prev) =>
+        prev.indexOf("Type contents first") < 0
+          ? prev.concat("Type contents first")
+          : prev
+      );
       //prev는 월래 있던 애러에다가 concat으로 단어 붙어줌!
       return;
     }

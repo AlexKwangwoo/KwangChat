@@ -1,7 +1,7 @@
 import React from "react";
 import UserPanel from "./UserPanel";
 import Favorited from "./Favorited";
-import ChatRooms from "./ChatRooms";
+// import ChatRooms from "./ChatRooms";
 import DirectMessages from "./DirectMessages";
 import FindUser from "./FindUser";
 import styles from "./SidePanel.module.css";

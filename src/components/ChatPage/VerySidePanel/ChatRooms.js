@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FaRegSmileWink } from "react-icons/fa";
+// import { FaRegSmileWink } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -8,7 +8,7 @@ import Badge from "react-bootstrap/Badge";
 import { connect } from "react-redux";
 import firebase from "../../../firebase";
 import styles from "./ChatRooms.module.css";
-
+import Scrollbars from "react-custom-scrollbars";
 import {
   setCurrentChatRoom,
   setPrivateChatRoom,
@@ -238,6 +238,7 @@ export class ChatRooms extends Component {
           }}
           className={styles.avatar}
           src={room.createdBy.image}
+          alt="img"
         />
         <span className={styles.name}> {room.name}</span>
 
@@ -248,12 +249,50 @@ export class ChatRooms extends Component {
     ));
 
   render() {
+    const renderThumb = ({ style, ...props }) => {
+      const thumbStyle = {
+        borderRadius: 6,
+        backgroundColor: "black",
+      };
+      return <div style={{ ...style, ...thumbStyle }} {...props} />;
+    };
+
+    const renderThumb_h = ({ style, ...props }) => {
+      const thumbStyle = {
+        borderRadius: 6,
+        backgroundColor: "black",
+        // overflowX: "none",
+      };
+      return <div style={{ ...style, ...thumbStyle }} {...props} />;
+    };
+
+    const CustomScrollbars = (props) => (
+      <Scrollbars
+        renderView={(props) => (
+          <div {...props} style={{ ...props.style, overflowX: "hidden" }} />
+        )}
+        renderThumbVertical={renderThumb}
+        {...props}
+      />
+    );
     // console.log("this.state.chatRooms", this.state.chatRooms);
     return (
       <div>
-        <ul className={styles.ul} style={{ listStyleType: "none", padding: 0 }}>
-          {this.renderChatRooms(this.state.chatRooms)}
-        </ul>
+        <div className={styles.list}>
+          <CustomScrollbars
+            style={{ width: "98%" }}
+            autoHide
+            autoHideTimeout={500}
+            autoHideDuration={200}
+          >
+            <ul
+              className={styles.ul}
+              style={{ listStyleType: "none", padding: 0 }}
+            >
+              {this.renderChatRooms(this.state.chatRooms)}
+            </ul>
+          </CustomScrollbars>
+        </div>
         <div className={styles.plusBox} onClick={this.handleShow}>
           {/* <FaRegSmileWink style={{ marginRight: 3 }} />
           CHAT ROOMS (1) */}

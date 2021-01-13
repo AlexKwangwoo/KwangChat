@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { IoIosChatboxes } from "react-icons/io";
+// import { IoIosChatboxes } from "react-icons/io";
 import Dropdown from "react-bootstrap/Dropdown";
 import Image from "react-bootstrap/Image";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,10 +7,11 @@ import firebase from "../../../firebase";
 import mime from "mime-types";
 import { setPhotoURL } from "../../../redux/actions/user_action";
 import styles from "./UserPanel.module.css";
-import moment from "moment";
+// import moment from "moment";
 
 function UserPanel() {
   const user = useSelector((state) => state.user.currentUser);
+  const userImage = user && user.photoURL;
   const dispatch = useDispatch();
   const inputOpenImageRef = useRef();
 
@@ -68,65 +69,109 @@ function UserPanel() {
       alert(error);
     }
   };
-  // console.log("user", user);
+  console.log("user", user);
   const dropstyle = {
     background: "transparent",
     border: "none",
     marginLeft: "5px",
   };
-  return (
-    user && (
-      <div className={styles.UserBox}>
-        {/* Logo */}
-        {/* <h3 style={{ color: "white" }}>
+  return userImage !== null ? (
+    <div className={styles.UserBox}>
+      {/* Logo */}
+      {/* <h3 style={{ color: "white" }}>
         <IoIosChatboxes /> Chat App
       </h3> */}
 
-        <div style={{ display: "flex", marginBottom: "1rem" }}>
-          <Image
-            src={user && user.photoURL}
-            style={{ width: "30p", height: "30px", marginTop: "3px" }}
-            roundedCircle
-          />
-          {/* {user.displayName} */}
-          <Dropdown>
-            <Dropdown.Toggle
-              style={dropstyle}
-              variant="secondary"
-              // className={styles.dropdown}
-              id="dropdown-basic"
-            >
-              {user && user.displayName}
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu className={styles.menu}>
-              <Dropdown.Item
-                // style={{
-                //   backgroundColor: "black",
-                // }}
-                className={styles.item}
-                onClick={handleOpenImageRef}
-              >
-                Change the profile picture
-              </Dropdown.Item>
-              <Dropdown.Item className={styles.item} onClick={handleLogout}>
-                LogOut
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-
-        <input
-          onChange={handleUploadImage}
-          accept="image/jpeg, image/png"
-          style={{ display: "none" }}
-          ref={inputOpenImageRef}
-          type="file"
+      <div style={{ display: "flex", marginBottom: "1rem" }}>
+        <Image
+          src={user && userImage}
+          style={{ width: "30p", height: "30px", marginTop: "3px" }}
+          roundedCircle
         />
-        {/* 숨겨져있다.. ref통해서 클릭시킬것임! 
-      accept 통해서 파일 속성 정할수있음!*/}
+        {/* {user.displayName} */}
+        <Dropdown>
+          <Dropdown.Toggle
+            style={dropstyle}
+            variant="secondary"
+            // className={styles.dropdown}
+            id="dropdown-basic"
+          >
+            {user && user.displayName}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu className={styles.menu}>
+            <Dropdown.Item
+              // style={{
+              //   backgroundColor: "black",
+              // }}
+              className={styles.item}
+              onClick={handleOpenImageRef}
+            >
+              Change the profile Photo
+            </Dropdown.Item>
+            <Dropdown.Item className={styles.item} onClick={handleLogout}>
+              LogOut
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
-    )
+
+      <input
+        onChange={handleUploadImage}
+        accept="image/jpeg, image/png"
+        style={{ display: "none" }}
+        ref={inputOpenImageRef}
+        type="file"
+      />
+      {/* 숨겨져있다.. ref통해서 클릭시킬것임! 
+      accept 통해서 파일 속성 정할수있음!*/}
+    </div>
+  ) : (
+    <div className={styles.userBoxTwo}>
+      {/* Logo */}
+      {/* <h3 style={{ color: "white" }}>
+        <IoIosChatboxes /> Chat App
+      </h3> */}
+
+      <div style={{ display: "flex", marginBottom: "1rem" }}>
+        {/* {user.displayName} */}
+        <Dropdown>
+          <Dropdown.Toggle
+            style={dropstyle}
+            variant="secondary"
+            // className={styles.dropdown}
+            id="dropdown-basic"
+          >
+            <div className={styles.change}>{"Change Your Profile Photo"}</div>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu className={styles.menu}>
+            <Dropdown.Item
+              // style={{
+              //   backgroundColor: "black",
+              // }}
+              className={styles.item}
+              onClick={handleOpenImageRef}
+            >
+              Change the profile Photo
+            </Dropdown.Item>
+            <Dropdown.Item className={styles.item} onClick={handleLogout}>
+              LogOut
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      <input
+        onChange={handleUploadImage}
+        accept="image/jpeg, image/png"
+        style={{ display: "none" }}
+        ref={inputOpenImageRef}
+        type="file"
+      />
+      {/* 숨겨져있다.. ref통해서 클릭시킬것임! 
+      accept 통해서 파일 속성 정할수있음!*/}
+    </div>
   );
 }
 

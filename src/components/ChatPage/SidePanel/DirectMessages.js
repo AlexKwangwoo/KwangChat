@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FaRegSmile } from "react-icons/fa";
+// import { FaRegSmile } from "react-icons/fa";
 import firebase from "../../../firebase";
 import { connect } from "react-redux";
 import {
@@ -37,7 +37,7 @@ export class DirectMessages extends Component {
     const { usersRef } = this.state;
     let usersArray = [];
     usersRef.on("child_added", (DataSnapshot) => {
-      console.log("add로 올지");
+      // console.log("add로 올지");
       if (currentUserId !== DataSnapshot.key) {
         // console.log("DataSnapshot새로?", DataSnapshot.val());
         //내이름은 DM에 뿌리면 안된다!
@@ -135,7 +135,7 @@ export class DirectMessages extends Component {
         }} //내가 클릭한 방과 uid가 같으면 색주기!
         onClick={() => this.changeChatRoom(user)}
       >
-        <img className={styles.avatar} src={user.image} />
+        <img className={styles.avatar} src={user.image} alt="img" />
         {user.state === "online" ? (
           <div className={styles.online}></div>
         ) : (
@@ -163,7 +163,7 @@ export class DirectMessages extends Component {
         }} //내가 클릭한 방과 uid가 같으면 색주기!
         onClick={() => this.changeChatRoom(user)}
       >
-        <img className={styles.avatar} src={user.image} />
+        <img className={styles.avatar} src={user.image} alt="img" />
         <span className={styles.name}>{user.name}</span>
         {user.state === "online" ? (
           <div className={styles.online}></div>

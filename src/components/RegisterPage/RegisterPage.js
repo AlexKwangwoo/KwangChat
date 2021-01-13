@@ -11,7 +11,7 @@ function RegisterPage() {
   const password = useRef();
   password.current = watch("password");
 
-  console.log(watch("email"));
+  // console.log(watch("email"));
 
   const onSubmit = async (data) => {
     //data안에 submit정보가 다 들어있다!
@@ -20,7 +20,7 @@ function RegisterPage() {
       let createdUser = await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password);
-      console.log("createdUser", createdUser);
+      // console.log("createdUser", createdUser);
 
       await createdUser.user.updateProfile({
         displayName: data.name,

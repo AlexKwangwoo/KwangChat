@@ -1,11 +1,14 @@
 .titleBox {
   background-color: #202226;
   height: 25px;
+  display: flex;
+  align-items: center;
+  margin-bottom: -2px;
 }
 
 .title {
-  padding-top: 4px;
-  margin-left: 11px;
+  padding-top: 14px;
+  margin-left: 3px;
   font-weight: 900;
   font-size: 12px;
   color: #707478;

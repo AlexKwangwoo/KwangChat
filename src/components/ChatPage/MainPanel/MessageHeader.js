@@ -18,9 +18,6 @@ import firebase from "../../../firebase";
 import { Media } from "react-bootstrap";
 import {
   InfoCircleFill,
-  BookmarkHeartFill,
-  BookmarkHeart,
-  EmojiHeartEyesFill,
   HeartFill,
   Heart,
   PeopleFill,
@@ -65,7 +62,7 @@ function MessageHeader({ handleSearchChange }) {
           // console.log("chatRoomIds", chatRoomIds);
           const isAlreadyFavorited = chatRoomIds.includes(chatRoomId);
           //여기서 포함됬는지 안했는지 알아본다!
-          console.log("isAlreadyFavorited", isAlreadyFavorited);
+          // console.log("isAlreadyFavorited", isAlreadyFavorited);
           setIsFavorited(isAlreadyFavorited);
         }
       });

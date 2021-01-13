@@ -5,8 +5,9 @@
 .Dropdown.Toggle {
   outline: none;
 }
-/* 
-.UserBox {
+
+/* .userBoxTwo {
+  padding-left: -12px;
 } */
 /* 
 .dropdown {
@@ -21,4 +22,9 @@
 .item {
   color: rgba(255, 255, 255, 0.692);
   font-size: 13px;
+}
+.change {
+  margin-left: -10px;
+  margin-right: 5px;
+  display: inline;
 }

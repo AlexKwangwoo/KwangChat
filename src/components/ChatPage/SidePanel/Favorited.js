@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FaRegSmileBeam } from "react-icons/fa";
+// import { FaRegSmileBeam } from "react-icons/fa";
 import firebase from "../../../firebase";
 import { connect } from "react-redux";
 import {
@@ -92,7 +92,11 @@ export class Favorited extends Component {
           alignItems: "center",
         }}
       >
-        <img className={styles.avatar} src={chatRoom.createdBy.image} />
+        <img
+          className={styles.avatar}
+          src={chatRoom.createdBy.image}
+          alt="img"
+        />
         <span className={styles.name}> {chatRoom.name}</span>
       </li>
     ));
@@ -115,7 +119,11 @@ export class Favorited extends Component {
           alignItems: "center",
         }}
       >
-        <img className={styles.avatar} src={chatRoom.createdBy.image} />
+        <img
+          className={styles.avatar}
+          src={chatRoom.createdBy.image}
+          alt="img"
+        />
         <span className={styles.name}> {chatRoom.name}</span>
       </li>
     ));
